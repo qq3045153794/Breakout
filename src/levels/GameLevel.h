@@ -16,9 +16,9 @@ public:
               GLuint level_width,
               GLuint level_height);
     
-    void Draw(SpriteRenderer& renderer);
+    void draw(SpriteRenderer& renderer);
 
-    GLboolean IsCompleted();
+    GLboolean is_completed();
 
 
 private:

@@ -10,6 +10,8 @@ set(SRC
     ${PROJECT_SOURCE_DIR}/../../src/tools/ResourceManager.cpp    
     ${PROJECT_SOURCE_DIR}/../../src/tools/Shader.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/Texture2D.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/block/GameObject.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/levels/GameLevel.cpp
     ${PROJECT_SOURCE_DIR}/../../src/Game.cpp
     ${PROJECT_SOURCE_DIR}/../../vendor/glad/src/glad.c
     ${PROJECT_SOURCE_DIR}/../../src/render/SpriteRenderer.cpp
@@ -18,7 +20,7 @@ set(SRC
 
 set(LIB
     ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7/lib/libglfw3.a
-    GL m Xrandr Xi X11 Xxf86vm pthread dl Xinerama Xcursor
+    GL m Xrandr  X11  pthread dl  
 )   
 add_executable(main
     ${SRC}
@@ -27,11 +29,13 @@ add_executable(main
 target_include_directories(main
     PUBLIC
         ${PROJECT_SOURCE_DIR}/../../src/tools
+        ${PROJECT_SOURCE_DIR}/../../src/render
+        ${PROJECT_SOURCE_DIR}/../../src/block
+        ${PROJECT_SOURCE_DIR}/../../src/levels
         ${PROJECT_SOURCE_DIR}/../../src
         ${PROJECT_SOURCE_DIR}/../../vendor/glad/include
         ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7/include
         ${PROJECT_SOURCE_DIR}/../../vendor/glm
-        ${PROJECT_SOURCE_DIR}/../../src/render
         ${PROJECT_SOURCE_DIR}/../../vendor/std_image
 )
 

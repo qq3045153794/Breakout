@@ -3,10 +3,12 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "GameLevel.h"
 #include "ResourceManager.h"
 #include "Shader.h"
 #include "Texture2D.h"
 #include "SpriteRenderer.h"
+
 
 enum GameState{
     GAME_ACTIVE,
@@ -16,7 +18,8 @@ enum GameState{
 
 class Game{
 public:
-    
+    GLuint level;
+    std::vector<GameLevel> levels;
     GameState state;
     GLboolean keys[1024];
     

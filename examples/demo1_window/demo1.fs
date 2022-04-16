@@ -8,6 +8,9 @@ uniform sampler2D image;
 
 
 void main(){
-
-    frag_color=vec4(sprite_color,1.0) * vec4(texture(image,tex_coords).rgb,1.0);
+    vec4 tex_color = vec4(sprite_color,1.0) * texture(image,tex_coords);
+    if(tex_color.a < 0.1)
+        discard;
+    
+    frag_color=tex_color;
 }

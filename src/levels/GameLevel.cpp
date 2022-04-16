@@ -8,23 +8,26 @@ void GameLevel::load(const GLchar* file,
     
     std::vector<std::vector<GLuint>> tile_data;
 
-    std::ifstream level_file;
-    level_file.exceptions(std::ifstream::failbit|std::ifstream::badbit);
-    try {
+    std::ifstream level_file(file);
+    
+    if(file) {
         std::string line;
         GLuint num;
-        level_file.open(file);
-        while(std::getline(level_file,line)) {
+        
+        while(std::getline(level_file, line)) {
+
             std::stringstream level_sstream(line);
             std::vector<GLuint> row; 
             while(level_sstream>>num) 
                 row.push_back(num);
+            tile_data.push_back(row);
         }
         level_file.close();
         if(tile_data.size()>0){
             init(tile_data,level_width,level_height);
         }
-    } catch(std::ifstream::failure e) {
+    }
+    else {
         level_file.close();
         fprintf(stderr, "Error: leval_file failed, FATH = (%s)\n",file);
         exit(1);
@@ -45,6 +48,16 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tile_data,
         for(GLuint j = 0; j < col; j++) {
             
             switch (tile_data[i][j]) {
+                case 1 : {
+                    GameObject object(
+                        glm::vec2(j * unit_width, i * unit_height),
+                        glm::vec2(unit_width, unit_height),
+                        ResourceManager::get_texture("block_solid"),
+                        glm::vec3(0.8f, 0.8f, 0.7f)
+                    );
+                    object.is_solid=GL_TRUE;
+                    this->bricks.push_back(object);
+                }
                 case 2 : {
                     GameObject object(
                         glm::vec2(j * unit_width, i * unit_height),
@@ -90,25 +103,25 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tile_data,
                     this->bricks.push_back(object);
                     break;
                 }
-                default : {
-                    GameObject object(
-                        glm::vec2(j * unit_width, i * unit_height),
-                        glm::vec2(unit_width, unit_height),
-                        ResourceManager::get_texture("block_solid"),
-                        glm::vec3(0.8f, 0.8f, 0.7f)
-                    );
-                    object.is_solid=GL_TRUE;
-                    this->bricks.push_back(object);
+                default :{
+                    //为空，不画
                 }
             }
         }
     }                     
 }
 
-void GameLevel::Draw(SpriteRenderer& renderer) {
+void GameLevel::draw(SpriteRenderer& renderer) {
     for(GameObject& obj : this->bricks) {
         obj.Draw(renderer);
     }
 }
 
-GLboolean GameLeve::
+GLboolean GameLevel::is_completed() {
+    for(GameObject& obj : this->bricks) {
+        if(!obj.is_solid&&!obj.destroyed) {
+            return GL_FALSE;
+        }
+    }
+    return GL_TRUE;
+}

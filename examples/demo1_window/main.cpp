@@ -6,6 +6,8 @@
 const GLuint SCREEN_WIDTH = 800;
 const GLuint SCREEN_HEIGHT = 600;
 Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 int main(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -16,11 +18,16 @@ int main(){
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
+    glfwSetKeyCallback(window, key_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
     Breakout.init();
     GLfloat deltaTime = 0.0f;
     GLfloat lastFrame = 0.0f;  
