@@ -25,5 +25,6 @@ private:
     void init(std::vector<std::vector<GLuint>> tile_data,
               GLuint level_width,
               GLuint level_height);
+    
 };
 #endif

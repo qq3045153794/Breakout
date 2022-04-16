@@ -49,12 +49,14 @@ GLuint Shader::create_shader(const GLchar* code,
     glShaderSource(id,1,&code,nullptr);
     glCompileShader(id);
     switch(type){
-        case GL_VERTEX_SHADER:
+        case GL_VERTEX_SHADER: {
             check_compile_errors(id,"Vertex Shader");
             break;
-        case GL_FRAGMENT_SHADER:
+        }
+        case GL_FRAGMENT_SHADER: {
             check_compile_errors(id,"Fragment Shader");
             break;
+        }
         default:
             check_compile_errors(id,"Geometry Shader");
     }

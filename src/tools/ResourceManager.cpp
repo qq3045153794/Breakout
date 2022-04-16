@@ -150,7 +150,6 @@ Texture2D ResourceManager::load_texture_from_file(const GLchar *file){
         stbi_image_free(image);
     }else{
         std::cout << "Texture failed to load at path: " << file << std::endl;
-        assert(0);
         stbi_image_free(image);
     }
     return texture2D;
