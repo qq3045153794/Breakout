@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.10)
 project(window)
 
 
@@ -19,7 +19,7 @@ set(SRC
 
 
 set(LIB
-    ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7/lib/libglfw3.a
+    ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7-wsl/lib/libglfw3.a
     GL m Xrandr  X11  pthread dl  
 )   
 add_executable(main
@@ -34,7 +34,7 @@ target_include_directories(main
         ${PROJECT_SOURCE_DIR}/../../src/levels
         ${PROJECT_SOURCE_DIR}/../../src
         ${PROJECT_SOURCE_DIR}/../../vendor/glad/include
-        ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7/include
+        ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7-wsl/include
         ${PROJECT_SOURCE_DIR}/../../vendor/glm
         ${PROJECT_SOURCE_DIR}/../../vendor/std_image
 )
