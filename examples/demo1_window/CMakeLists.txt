@@ -10,6 +10,7 @@ set(SRC
     ${PROJECT_SOURCE_DIR}/../../src/tools/ResourceManager.cpp    
     ${PROJECT_SOURCE_DIR}/../../src/tools/Shader.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/Texture2D.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/block/BallObject.cpp
     ${PROJECT_SOURCE_DIR}/../../src/block/GameObject.cpp
     ${PROJECT_SOURCE_DIR}/../../src/levels/GameLevel.cpp
     ${PROJECT_SOURCE_DIR}/../../src/Game.cpp
