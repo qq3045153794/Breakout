@@ -12,6 +12,38 @@ const GLfloat BALL_RADIUS = 12.5;
 GameObject* player;
 BallObject* ball;
 
+
+GLboolean CheckCollision(BallObject& one, GameObject& two) {
+    /*
+    AA_BB碰撞
+    GLfloat x1 = one.position.x;
+    GLfloat x2 = one.position.x + one.size.x;
+    GLfloat x3 = two.position.x;
+    GLfloat x4 = two.position.x + two.size.x;
+    GLfloat y1 = one.position.y;
+    GLfloat y2 = one.position.y + one.size.y;
+    GLfloat y3 = two.position.y;
+    GLfloat y4 = two.position.y + two.size.y;
+    std::cout<<std::max(x1, x3)<<" "<<std::min(x2, x4)<<" "<<std::max(y1, y3)<<" "<<std::min(y2, y4)<<"\n";
+    std::cout<<"bool="<<((std::max(x1, x3)<=std::min(x2, x4))&&(std::max(y1, y3)<=std::min(y2, y4)))<<"\n";
+    if((std::max(x1, x3)<=std::min(x2, x4))&&(std::max(y1, y3)<=std::min(y2, y4)))
+        return GL_TRUE;
+    return GL_FALSE;
+    */ 
+    glm::vec2 center(one.position + one.radius);
+    glm::vec2 aabb_half_extents(two.size.x / 2, two.size.y / 2);
+    glm::vec2 aabb_center(
+        two.position.x + aabb_half_extents.x, 
+        two.position.y + aabb_half_extents.y
+    );
+    glm::vec2 diff =center - aabb_center;
+    glm::vec2 clamp = glm::clamp (diff, -aabb_half_extents, aabb_half_extents);
+    glm::vec2 p = aabb_center + clamp;
+    glm::vec2 p_vector = p - center;
+    return glm::length(p_vector) <= one.radius;
+
+}
+
 Game::Game(GLuint width, GLuint height) 
 	: state(GAME_ACTIVE), keys(), width(width), height(height) { 
     
@@ -75,7 +107,8 @@ void Game::init(){
 }
 
 void Game::update(GLfloat dt) {
-    ball->move(dt, this->width);   
+    ball->move(dt, this->width);  
+    this->doCollision(); 
 }
 
 void Game::process_input(GLfloat dt) {
@@ -90,10 +123,11 @@ void Game::process_input(GLfloat dt) {
             }
         }
         if (this->keys[GLFW_KEY_D]) {
-            if (player->position.x <= this->width - player->size.x)
+            if (player->position.x <= this->width - player->size.x) {
                 player->position.x += velocity;
-            if(ball->stuck) 
+                if(ball->stuck)
                     ball->position.x += velocity;
+            }
         }
     }
     if (this->keys[GLFW_KEY_SPACE])
@@ -112,3 +146,15 @@ void Game::render(){
         ball->Draw(*renderer);
     }
 }
+
+void Game::doCollision() {
+    for(auto& box : this->levels[this->level].bricks) {
+        if(!box.destroyed) {
+            if(CheckCollision(*ball, box)) {
+                std::cout<<"destroyed"<<"\n";
+                box.destroyed = GL_TRUE;
+            }
+        }
+    }
+}
+

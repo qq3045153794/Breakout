@@ -113,7 +113,8 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tile_data,
 
 void GameLevel::draw(SpriteRenderer& renderer) {
     for(GameObject& obj : this->bricks) {
-        obj.Draw(renderer);
+        if(!obj.destroyed)
+            obj.Draw(renderer);
     }
 }
 
