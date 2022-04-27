@@ -1,5 +1,14 @@
 #include "Game.h"
 #include "BallObject.h"
+
+//球的返回方向
+enum Dirction {
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+typedef std::tuple<GLboolean, Dirction, glm::vec2> collision;
 // 初始化挡板的大小
 const glm::vec2 PLAYER_SIZE(100, 20);
 // 初始化当板的速率
@@ -12,8 +21,27 @@ const GLfloat BALL_RADIUS = 12.5;
 GameObject* player;
 BallObject* ball;
 
+//判断球从AABB那个方向撞过来
+Dirction  vectorDirction(glm::vec2 target) {
+    std::vector<glm::vec2> tmp = {
+        glm::vec2(0.0, 1.0),
+        glm::vec2(1.0, 0.0),
+        glm::vec2(0.0, -1.0),
+        glm::vec2(-1.0, 0.0),
+    };
+    GLfloat mx = 0.0;
+    GLint pos = 0;
+    for(int i=0; i < 4; i++) {
+        if(glm::dot(tmp[i], glm::normalize(target)) > mx) {
+            mx = dot(tmp[i], glm::normalize(target));
+            pos = i;
+        }
+    }
+    
+    return static_cast<Dirction> (pos);
+}
 
-GLboolean CheckCollision(BallObject& one, GameObject& two) {
+collision CheckCollision(BallObject& one, GameObject& two) {
     /*
     AA_BB碰撞
     GLfloat x1 = one.position.x;
@@ -40,7 +68,11 @@ GLboolean CheckCollision(BallObject& one, GameObject& two) {
     glm::vec2 clamp = glm::clamp (diff, -aabb_half_extents, aabb_half_extents);
     glm::vec2 p = aabb_center + clamp;
     glm::vec2 p_vector = p - center;
-    return glm::length(p_vector) <= one.radius;
+    if(glm::length(p_vector) <= one.radius) {
+        return collision(GL_TRUE, vectorDirction(p_vector), p_vector);
+    }else {
+        return collision(GL_FALSE, UP, glm::vec2(0.0, 0.0));
+    }
 
 }
 
@@ -109,6 +141,11 @@ void Game::init(){
 void Game::update(GLfloat dt) {
     ball->move(dt, this->width);  
     this->doCollision(); 
+
+    if(ball->position.y >= this->height){
+        this->reset_level();
+        this->reset_player();
+    }
 }
 
 void Game::process_input(GLfloat dt) {
@@ -147,14 +184,74 @@ void Game::render(){
     }
 }
 
+//碰撞处理
 void Game::doCollision() {
     for(auto& box : this->levels[this->level].bricks) {
         if(!box.destroyed) {
-            if(CheckCollision(*ball, box)) {
+            auto res = CheckCollision(*ball, box);
+            if(std::get<0>(res)) {
                 std::cout<<"destroyed"<<"\n";
-                box.destroyed = GL_TRUE;
+                if(!box.is_solid)
+                    box.destroyed = GL_TRUE;
+                auto dir = std::get<1>(res);
+                auto v = std::get<2>(res);
+                if(dir == LEFT || dir == RIGHT) {
+                    ball->velocity.x = -ball->velocity.x;
+                    GLfloat dif = ball->radius - std::abs(v.x);
+                    if(dir == LEFT) {
+                        ball->position.x += dif;
+                    }else {
+                        ball->position.x -= dif;
+                    }
+                }else {
+                    ball->velocity.y = -ball->velocity.y;
+                    GLfloat dif = ball->radius - std::abs(v.y);
+                    if(dif == UP) {
+                        ball->position.y -= dif;
+                    }else {
+                        ball->position.y += dif;
+                    }
+                }
             }
         }
     }
+
+    //玩家与板子
+    auto ans = CheckCollision(*ball, *player);
+    if(!ball->stuck && std::get<0>(ans)) {
+        GLfloat center =player->position.x + player->size.x/2.0;
+        GLfloat dis = ball->position.x + ball->radius - center;
+        GLfloat percentage = dis / (player->size.x / 2.0);
+    
+        GLfloat strength = 2.0;
+        glm::vec2 old_velocity = ball->velocity;
+        ball->velocity.x = INTTIAL_BALL_VELOCITY.x  * percentage * strength;
+        ball->velocity.y = -std::fabs(ball->velocity.y);
+        ball->velocity = glm::normalize(ball->velocity) * glm::length(old_velocity);
+    }
 }
 
+
+void Game::reset_level() {
+    if (this->level == 0) 
+        this->levels[0].load("../1.lvl", this->width, this->height * 0.5f);
+    else if (this->level == 1)
+        this->levels[1].load("../2.lvl", this->width, this->height * 0.5f);
+    else if (this->level == 2)
+        this->levels[2].load("../3.lvl", this->width, this->height * 0.5f);
+    else if (this->level == 3)
+        this->levels[3].load("../4.lvl", this->width, this->height * 0.5f);
+    std::cout<<"sz="<<this->levels[0].bricks.size()<<"\n";
+    this->level = 0;
+}
+
+void Game::reset_player() {
+    //加载挡板
+    glm::vec2 player_pos = glm::vec2(this->width / 2 - PLAYER_SIZE.x / 2, 
+                                    this->height - PLAYER_SIZE.y);
+    player->size = PLAYER_SIZE;
+    player->position = player_pos;
+    //加载小球
+    glm::vec2 ball_pos =player_pos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS , -2 * BALL_RADIUS);
+    ball->reset(ball_pos, INTTIAL_BALL_VELOCITY);
+}

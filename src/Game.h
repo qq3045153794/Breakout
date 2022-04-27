@@ -36,5 +36,7 @@ public:
     void update(GLfloat dt);
     void render();
     void doCollision();
+    void reset_level();
+    void reset_player();
 };
 #endif

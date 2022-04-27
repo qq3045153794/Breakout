@@ -40,10 +40,11 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tile_data,
     GLuint row = tile_data.size();
     GLuint col = tile_data[0].size();
 
-    GLfloat unit_height=static_cast<GLfloat>(level_height)/row;
-    GLfloat unit_width=static_cast<GLfloat>(level_width)/col;
+    GLfloat unit_height=static_cast<GLfloat>(level_height)  / row;
+    GLfloat unit_width=static_cast<GLfloat>(level_width) / col;
     
-
+    this->bricks.clear();
+    std::cout<<"this clear bricks\n";
     for(GLuint i = 0; i < row; i++) {
         for(GLuint j = 0; j < col; j++) {
             
@@ -57,6 +58,7 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tile_data,
                     );
                     object.is_solid=GL_TRUE;
                     this->bricks.push_back(object);
+                    break;
                 }
                 case 2 : {
                     GameObject object(
