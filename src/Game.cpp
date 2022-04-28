@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "BallObject.h"
-
+#include "ParticleGenerator.h"
 //球的返回方向
 enum Dirction {
     UP,
@@ -20,6 +20,7 @@ const GLfloat BALL_RADIUS = 12.5;
 
 GameObject* player;
 BallObject* ball;
+ParticleGenerator* particleGenerator;
 
 //判断球从AABB那个方向撞过来
 Dirction  vectorDirction(glm::vec2 target) {
@@ -90,12 +91,17 @@ void Game::init(){
     ResourceManager::load_shader("../demo1.vs",
                                  "../demo1.fs",
                                  "sprite");
+    ResourceManager::load_shader("../paricle.vs","../paricle.fs","paricle");
     glm::mat4 projection = glm::ortho(0.0f, 
                                       static_cast<GLfloat>(this->width), 
                                       static_cast<GLfloat>(this->height), 
                                       0.0f, -1.0f, 1.0f);
 	ResourceManager::get_shader("sprite").use().set_integer("image",0);
     ResourceManager::get_shader("sprite").set_matrix4("projection", projection);
+
+    ResourceManager::get_shader("paricle").use().set_integer("image",0);
+    ResourceManager::get_shader("paricle").set_matrix4("projection", projection);
+
     //加载纹理
     ResourceManager::load_texture("../awesomeface.png",
                                   "face");
@@ -107,6 +113,8 @@ void Game::init(){
                                   "background");
     ResourceManager::load_texture("../paddle.png", 
                                   "paddle");
+    ResourceManager::load_texture("../particle.png", 
+                                  "particle");
     //加载关卡
     GameLevel one; one.load("../1.lvl",
                             this->width,
@@ -136,10 +144,13 @@ void Game::init(){
     //加载小球
     glm::vec2 ballPos =player_pos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS , -2 * BALL_RADIUS);
     ball = new BallObject(ballPos, BALL_RADIUS, INTTIAL_BALL_VELOCITY, ResourceManager::get_texture("face"));
+    //加载粒子发射器
+    particleGenerator = new  ParticleGenerator(ResourceManager::get_shader("paricle"), ResourceManager::get_texture("particle"), 500);
 }
 
 void Game::update(GLfloat dt) {
     ball->move(dt, this->width);  
+    particleGenerator->update(dt, ball, 2, glm::vec2( ball->radius / 2.0));
     this->doCollision(); 
 
     if(ball->position.y >= this->height){
@@ -181,6 +192,7 @@ void Game::render(){
         this->levels[level].draw(*renderer);
         player->Draw(*renderer);
         ball->Draw(*renderer);
+        particleGenerator->draw();
     }
 }
 

@@ -7,6 +7,7 @@ message("SOURCE: ${PROJECT_SOURCE_DIR}")
 set(CMAKE_BUILD_TYPE,"Debug")
 set(SRC 
     ${PROJECT_SOURCE_DIR}/main.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/render/ParticleGenerator.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/ResourceManager.cpp    
     ${PROJECT_SOURCE_DIR}/../../src/tools/Shader.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/Texture2D.cpp

@@ -32,7 +32,7 @@ int main(){
     GLfloat deltaTime = 0.0f;
     GLfloat lastFrame = 0.0f;  
     Breakout.state = GAME_ACTIVE;
-
+    glEnable(GL_BLEND);
     while (!glfwWindowShouldClose(window)){
         // Calculate delta time
         GLfloat currentFrame = glfwGetTime();

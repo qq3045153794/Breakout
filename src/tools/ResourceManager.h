@@ -1,25 +1,14 @@
-
 #ifndef _RESOURCE_MANAGER_H_
 #define _RESOURCE_MANAGER_H_
 
-
-
-
 #include "glad/glad.h"
-
-
 #include "Shader.h"
 #include "Texture2D.h"
-
-
 
 #include <map>
 #include <string>
 #include <sstream>
 #include <fstream>
-
-
-
 
 class ResourceManager
 {
