@@ -7,16 +7,18 @@ message("SOURCE: ${PROJECT_SOURCE_DIR}")
 set(CMAKE_BUILD_TYPE,"Debug")
 set(SRC 
     ${PROJECT_SOURCE_DIR}/main.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/render/SpriteRenderer.cpp
     ${PROJECT_SOURCE_DIR}/../../src/render/ParticleGenerator.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/ResourceManager.cpp    
     ${PROJECT_SOURCE_DIR}/../../src/tools/Shader.cpp
     ${PROJECT_SOURCE_DIR}/../../src/tools/Texture2D.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/tools/PostProcessor.cpp
     ${PROJECT_SOURCE_DIR}/../../src/block/BallObject.cpp
     ${PROJECT_SOURCE_DIR}/../../src/block/GameObject.cpp
     ${PROJECT_SOURCE_DIR}/../../src/levels/GameLevel.cpp
     ${PROJECT_SOURCE_DIR}/../../src/Game.cpp
     ${PROJECT_SOURCE_DIR}/../../vendor/glad/src/glad.c
-    ${PROJECT_SOURCE_DIR}/../../src/render/SpriteRenderer.cpp
+    
 )
 
 

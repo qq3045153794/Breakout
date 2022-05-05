@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "BallObject.h"
 #include "ParticleGenerator.h"
+#include "PostProcessor.h"
 //球的返回方向
 enum Dirction {
     UP,
@@ -18,9 +19,13 @@ const glm::vec2 INTTIAL_BALL_VELOCITY(100.0, -350.0);
 // 初始化小球半径
 const GLfloat BALL_RADIUS = 12.5;
 
+GLfloat shake_time = 0.0f;
+
 GameObject* player;
 BallObject* ball;
 ParticleGenerator* particleGenerator;
+PostProcessor* effects;
+
 
 //判断球从AABB那个方向撞过来
 Dirction  vectorDirction(glm::vec2 target) {
@@ -92,6 +97,7 @@ void Game::init(){
                                  "../demo1.fs",
                                  "sprite");
     ResourceManager::load_shader("../paricle.vs","../paricle.fs","paricle");
+    ResourceManager::load_shader("../frame.vs", "../frame.fs", "frame");
     glm::mat4 projection = glm::ortho(0.0f, 
                                       static_cast<GLfloat>(this->width), 
                                       static_cast<GLfloat>(this->height), 
@@ -146,6 +152,8 @@ void Game::init(){
     ball = new BallObject(ballPos, BALL_RADIUS, INTTIAL_BALL_VELOCITY, ResourceManager::get_texture("face"));
     //加载粒子发射器
     particleGenerator = new  ParticleGenerator(ResourceManager::get_shader("paricle"), ResourceManager::get_texture("particle"), 500);
+    //后期处理
+    effects = new PostProcessor(ResourceManager::get_shader("frame"), this->width, this->height);
 }
 
 void Game::update(GLfloat dt) {
@@ -156,6 +164,12 @@ void Game::update(GLfloat dt) {
     if(ball->position.y >= this->height){
         this->reset_level();
         this->reset_player();
+    }
+
+    if(shake_time > 0.0f) {
+        shake_time -=dt;
+        if(shake_time <= 0.0f)
+            effects->shake = false;
     }
 }
 
@@ -183,7 +197,9 @@ void Game::process_input(GLfloat dt) {
 }
 
 void Game::render(){
-    if(this->state == GAME_ACTIVE) {                                    
+    if(this->state == GAME_ACTIVE) {        
+        
+        effects->begin_render();
         renderer->DrawSprite(ResourceManager::get_texture("background"),
                          glm::vec2(0, 0),
                          glm::vec2(this->width, this->height),
@@ -193,6 +209,8 @@ void Game::render(){
         player->Draw(*renderer);
         ball->Draw(*renderer);
         particleGenerator->draw();
+        effects->end_render();
+        effects->render(glfwGetTime());
     }
 }
 
@@ -205,6 +223,10 @@ void Game::doCollision() {
                 std::cout<<"destroyed"<<"\n";
                 if(!box.is_solid)
                     box.destroyed = GL_TRUE;
+                else {
+                    shake_time = 0.05f;
+                    effects->shake = true;
+                }
                 auto dir = std::get<1>(res);
                 auto v = std::get<2>(res);
                 if(dir == LEFT || dir == RIGHT) {

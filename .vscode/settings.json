@@ -1,6 +1,6 @@
 {
     "glsl-linter.validatorPath": 
-    "/home/mini/git/github/glsl_linter/bin/glslangValidator", 
+    "/home/xietao/data/glsl/bin/glslangValidator", 
     "glsl-linter.fileExtensions": {
         ".fs.glsl": "frag",
         ".fs": "frag",
