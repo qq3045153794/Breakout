@@ -8,7 +8,7 @@
 #include "Shader.h"
 #include "Texture2D.h"
 #include "SpriteRenderer.h"
-
+#include "PowerUp.h"
 
 enum GameState{
     GAME_ACTIVE,
@@ -20,6 +20,7 @@ class Game{
 public:
     GLuint level;
     std::vector<GameLevel> levels;
+    std::vector<PowerUp> PowerUps;
     GameState state;
     GLboolean keys[1024];
     
@@ -34,6 +35,8 @@ public:
     void init();
     void process_input(GLfloat dt);
     void update(GLfloat dt);
+    void SpawnPowerUps(GameObject& block);
+    void UpdatePowerUps(GLfloat dt);
     void render();
     void doCollision();
     void reset_level();

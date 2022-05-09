@@ -15,15 +15,17 @@ set(SRC
     ${PROJECT_SOURCE_DIR}/../../src/tools/PostProcessor.cpp
     ${PROJECT_SOURCE_DIR}/../../src/block/BallObject.cpp
     ${PROJECT_SOURCE_DIR}/../../src/block/GameObject.cpp
+    ${PROJECT_SOURCE_DIR}/../../src/block/PowerUp.cpp
     ${PROJECT_SOURCE_DIR}/../../src/levels/GameLevel.cpp
     ${PROJECT_SOURCE_DIR}/../../src/Game.cpp
     ${PROJECT_SOURCE_DIR}/../../vendor/glad/src/glad.c
-    
 )
 
 
 set(LIB
     ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7-wsl/lib/libglfw3.a
+
+    ${PROJECT_SOURCE_DIR}/../../vendor/irrKlang/linux-gcc-64/libIrrKlang.so
     GL m Xrandr  X11  pthread dl  
 )   
 add_executable(main
@@ -41,6 +43,7 @@ target_include_directories(main
         ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7-wsl/include
         ${PROJECT_SOURCE_DIR}/../../vendor/glm
         ${PROJECT_SOURCE_DIR}/../../vendor/std_image
+        ${PROJECT_SOURCE_DIR}/../../vendor/irrKlang/include
 )
 
 target_link_libraries(main

@@ -13,6 +13,8 @@ public:
     GLfloat     rotation;
     GLboolean   is_solid;
     GLboolean   destroyed;
+    GLboolean   sticky;
+    GLboolean   pass_through;
     // Render state
     Texture2D   sprite;	
     // Constructor(s)
