@@ -68,22 +68,6 @@ GLboolean CheckCollision(GameObject& one, GameObject& two) {
 }
 
 collision CheckCollision(BallObject& one, GameObject& two) {
-    /*
-    AA_BB碰撞
-    GLfloat x1 = one.position.x;
-    GLfloat x2 = one.position.x + one.size.x;
-    GLfloat x3 = two.position.x;
-    GLfloat x4 = two.position.x + two.size.x;
-    GLfloat y1 = one.position.y;
-    GLfloat y2 = one.position.y + one.size.y;
-    GLfloat y3 = two.position.y;
-    GLfloat y4 = two.position.y + two.size.y;
-    std::cout<<std::max(x1, x3)<<" "<<std::min(x2, x4)<<" "<<std::max(y1, y3)<<" "<<std::min(y2, y4)<<"\n";
-    std::cout<<"bool="<<((std::max(x1, x3)<=std::min(x2, x4))&&(std::max(y1, y3)<=std::min(y2, y4)))<<"\n";
-    if((std::max(x1, x3)<=std::min(x2, x4))&&(std::max(y1, y3)<=std::min(y2, y4)))
-        return GL_TRUE;
-    return GL_FALSE;
-    */ 
     glm::vec2 center(one.position + one.radius);
     glm::vec2 aabb_half_extents(two.size.x / 2, two.size.y / 2);
     glm::vec2 aabb_center(

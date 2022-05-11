@@ -22,10 +22,10 @@ set(SRC
 )
 
 
+find_library(IRRKLANG_LIBRARY NAMES IrrKlang PATHS "${PROJECT_SOURCE_DIR}/../../vendor/irrKlang/linux-gcc-64")
+
 set(LIB
     ${PROJECT_SOURCE_DIR}/../../vendor/glfw-3.3.7-wsl/lib/libglfw3.a
-
-    ${PROJECT_SOURCE_DIR}/../../vendor/irrKlang/linux-gcc-64/libIrrKlang.so
     GL m Xrandr  X11  pthread dl  
 )   
 add_executable(main
@@ -49,5 +49,7 @@ target_include_directories(main
 target_link_libraries(main
     PUBLIC
         ${LIB}
+        ${PROJECT_SOURCE_DIR}/../../vendor/irrKlang/linux-gcc-64
+        ${IRRKLANG_LIBRARY}
 )
 
